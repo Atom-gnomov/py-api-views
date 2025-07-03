@@ -7,8 +7,9 @@ from django.shortcuts import get_object_or_404
 from rest_framework.views import APIView
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
-from cinema.models import Movie, Genre, Actor, CinemaHall
-from cinema.serializers import MovieSerializer, GenreSerializer, ActorSerializer, CinemaHallSerializer
+from cinema.models import Movie, Genre, Actor, CinemaHall, Screening
+from cinema.serializers import MovieSerializer, GenreSerializer, ActorSerializer, CinemaHallSerializer, \
+    ScreeningSerializer
 
 
 class GenreList(APIView):
@@ -84,10 +85,12 @@ class CinemaHallViewSet(
     queryset = CinemaHall.objects.all()
     serializer_class = CinemaHallSerializer
 
-class MovieList(ModelViewSet):
-    serializer_class = MovieSerializer
+class MovieViewSet(ModelViewSet):
     queryset = Movie.objects.all()
-    lookup_field = 'pk'
+    serializer_class = MovieSerializer
 
+class ScreeningViewSet(ModelViewSet):
+    queryset = Screening.objects.all()
+    serializer_class = ScreeningSerializer
 
 

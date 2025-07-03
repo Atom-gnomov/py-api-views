@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from cinema.models import Movie, Actor, Genre, CinemaHall
+from cinema.models import Movie, Actor, Genre, CinemaHall, Screening
 
 
 class ActorSerializer(serializers.Serializer):
@@ -47,15 +47,17 @@ class CinemaHallSerializer(serializers.Serializer):
         return instance
 
 
-class MovieSerializer(serializers.Serializer):
-    id = serializers.IntegerField(read_only=True)
-    title = serializers.CharField(max_length=255)
-    description = serializers.CharField()
-    duration = serializers.IntegerField()
+class MovieSerializer(serializers.ModelSerializer):
+    genres = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Genre.objects.all()
+    )
+    actors = serializers.PrimaryKeyRelatedField(
+        many=True, queryset=Actor.objects.all()
+    )
 
-    genres = serializers.PrimaryKeyRelatedField(many=True, queryset=Genre.objects.all())
-    actors = serializers.PrimaryKeyRelatedField(many=True, queryset=Actor.objects.all())
-    cinema_hall = serializers.PrimaryKeyRelatedField(queryset=CinemaHall.objects.all())
+    class Meta:
+        model = Movie
+        fields = ['id', 'title', 'description', 'duration', 'genres', 'actors']
 
     def create(self, validated_data):
         genres = validated_data.pop('genres')
@@ -77,4 +79,13 @@ class MovieSerializer(serializers.Serializer):
             instance.genres.set(genres)
         if actors is not None:
             instance.actors.set(actors)
+
         return instance
+
+class ScreeningSerializer(serializers.ModelSerializer):
+    movie = serializers.PrimaryKeyRelatedField(queryset=Movie.objects.all())
+    cinema_hall = serializers.PrimaryKeyRelatedField(queryset=CinemaHall.objects.all())
+
+    class Meta:
+        model = Screening
+        fields = ['id', 'movie', 'cinema_hall', 'start_time']

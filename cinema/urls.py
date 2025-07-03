@@ -6,10 +6,8 @@ from cinema.views import GenreList, GenreDetail, ActorViewSet, CinemaHallViewSet
 
 router = DefaultRouter()
 router.register('movies', views.MovieList)
-
 actor_list = ActorViewSet.as_view({'get': 'list', 'post': 'create'})
 actor_detail = ActorViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'})
-
 cinema_list = CinemaHallViewSet.as_view({'get': 'list', 'post': 'create'})
 cinema_detail = CinemaHallViewSet.as_view({'get': 'retrieve', 'put': 'update', 'patch': 'partial_update', 'delete': 'destroy'})
 urlpatterns = [
